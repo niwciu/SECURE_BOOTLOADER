@@ -1,0 +1,10 @@
+out/
+Release/
+Debug/
+Build/
+reports/
+
+ToDo.txt
+
+.venv/
+__pycache__/

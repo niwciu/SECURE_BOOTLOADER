@@ -25,7 +25,7 @@ endif()
 #  -fstack-usage - enable stack usage analysis
 #  -fcyclomatic-complexity ->TBC
 set(C_FLAGS
-    "-std=gnu11 -Os -ffunction-sections -fdata-sections -fverbose-asm -MMD -fstack-usage --specs=nano.specs"
+    "-std=gnu11 -Os -ffunction-sections -fdata-sections -fverbose-asm -MMD -fstack-usage --specs=nano.specs -flto -ffast-math -fno-unwind-tables -fno-asynchronous-unwind-tables"
 )
 
 # Use newlib-nano, links with libc_nano.a
@@ -43,7 +43,7 @@ set(C_WARNINGS "-Wall -Wextra -Wstrict-prototypes")
 # -fno-exceptions - disable exception handling
 # fverbose-asm - additional comments for generated assembler code
 # -MMD - create dependency files
-set(CXX_FLAGS "-std=gnu++14 -Os -fno-rtti -fno-exceptions -fverbose-asm -MMD")
+set(CXX_FLAGS "-std=gnu++14 -Os -fno-rtti -fno-exceptions -fverbose-asm -MMD -flto -ffast-math -fno-unwind-tables -fno-asynchronous-unwind-tables")
 
 # Warning flags for C++
 # -Wall - standard warnings
@@ -65,7 +65,7 @@ set(LD_SCRIPT ${CMAKE_SOURCE_DIR}/${LD_FILE})
 # -Wl,--print-memory-usage -> as the flag says :)
 # -Wl,--start-group -lc -lm 
 # -Wl,--end-group
-set(LD_FLAGS "-Wl,-Map=\"${PROJECT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.map\",--cref -T\"${LD_SCRIPT}\" --specs=nosys.specs -Wl,--gc-sections -Wl,--print-memory-usage")
+set(LD_FLAGS "-Wl,-Map=\"${PROJECT_BINARY_DIR}/${CMAKE_PROJECT_NAME}.map\",--cref -T\"${LD_SCRIPT}\" --specs=nosys.specs -Wl,--gc-sections -Wl,--print-memory-usage -flto ")
 
 # ========================= APPLY ============================
 set(CMAKE_C_FLAGS               "${CORE_FLAGS} ${C_FLAGS} ${C_WARNINGS}")

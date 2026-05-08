@@ -57,12 +57,12 @@ FROM ubuntu:latest
 # ----------------------------------------------------------------------------------------------------------------------
 # Global configuration (tool versions)
 # ----------------------------------------------------------------------------------------------------------------------
-ARG ARM_TOOLCHAIN_VERSION=13.2
-ARG CPPCHECK_VERSION=2.16.2
-ARG DOXYGEN_VERSION=1.13.2
-ARG LIZARD_VERSION=1.21.0
-ARG GCOVR_VERSION=7.2
-ARG JINJA_VERSION=3.1.3
+ARG ARM_TOOLCHAIN_VERSION=15.2
+ARG CPPCHECK_VERSION=2.19.0
+ARG DOXYGEN_VERSION=1.16.0
+ARG LIZARD_VERSION=1.19
+ARG GCOVR_VERSION=8.4
+ARG JINJA_VERSION=3.1.6
 
 # Computed names based on version args
 ARG ARM_TOOLCHAIN_FILE=arm-gnu-toolchain-${ARM_TOOLCHAIN_VERSION}.rel1-x86_64-arm-none-eabi.tar.xz
@@ -87,7 +87,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
     python3-venv \
     clang-format \
-    stlink-tools \
     graphviz \
     flex \
     bison \

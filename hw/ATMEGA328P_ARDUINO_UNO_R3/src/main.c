@@ -1,35 +1,31 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
+/**
+ * @file main.c
+ * @author niwciu (niwciu@gmail.com)
+ * @brief
+ * @version 1.0.0
+ * @date 2026-05-07
+ *
+ * @copyright Copyright (c) 2026
+ *
+ */
 #include <avr/io.h>
-#include <util/delay.h>
-#include "project_config.h"
-#if DEBUG_CONSOLE == ON
-#include "debug.h"
-#endif
+#include <avr/wdt.h>
+#include "main_app.h"
+#include <avr/interrupt.h>
 
 int main(void)
 {
-    DDRB|=1<<PINB5;
+    
 
-#if DEBUG_CONSOLE == ON
-    // Init the debug UART allowing us to use `printf`
-    debug_console_init();
+    // relocate interrupt vectors to the begining of bootloader memory section
+    MCUCR = (1<<IVCE);
+    MCUCR = (1<<IVSEL);
+    /* Clear WDT reset flag and disable watchdog early.
+     * After a WDT-triggered reset (system_reset()), the MCU re-enters the
+     * bootloader with WDRF set and WDT still enabled. Clearing MCUSR and
+     * calling wdt_disable() must happen before the first WDT timeout. */
+    MCUSR = 0;
+    wdt_disable();
 
-    printf("Debug console test PASS!\r\n");
-#endif
-    while (1)
-    {
-        PORTB |=(1<<PINB5);
-        _delay_ms(500);
-#if DEBUG_CONSOLE == ON
-    printf("LED is OFF\n");
-#endif
-        PORTB &=~(1<<PINB5);
-        _delay_ms(500);
-#if DEBUG_CONSOLE == ON
-    printf("LED is ON\n");
-#endif
-    }
-    return 0;
+    return main_app();
 }

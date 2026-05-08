@@ -1,85 +1,119 @@
-#############################################################################################################################
+############################################################################################################################
 # file:  CMakeLists.txt
-# brief: Template "CMakeLists.txt" for building of executables and static libraries.
+# brief: Bootloader build for ATmega328P / Arduino Uno R3
 #
-# usage: Edit MCPU-Variable to suit STM32 project requirements.
-#        For debug build using Unix Makefiles:
-#          cmake -S ./ -B Debug -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
-#          make -C Debug all (optional with VERBOSE=1  and -jxx ->xx numnber of cores)
-#        For debug build using Ninja:
-#          cmake -S ./ -B Debug -G"Ninja" -DCMAKE_BUILD_TYPE=Debug
-#          ninja -C Debug (optional with -V  and -jxx ->xx numnber of cores)
-# 
-#        For release build Unix Makefiles:
-#          cmake -S ./ -B Release -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
-#          make all -C Release VERBOSE=1 -j12 (optional with VERBOSE=1  and -jxx ->xx numnber of cores)
-#        For Release build using Ninja:
-#          cmake -S ./ -B Release -G"Ninja" -DCMAKE_BUILD_TYPE=Release
-#          ninja -C Release (optional -V  and -jxx ->xx numnber of cores)
+# usage:
+#   cmake -S ./ -B Build -G"Unix Makefiles"
+#   make -C Build all
+#
+# Optional variables:
+#   DEVICE_ID   : 64-bit device identifier (default 0x0000000000000000)
+#   ENCR_KEY    : 16-byte AES key in C initializer format
 #############################################################################################################################
 cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_TOOLCHAIN_FILE ../config/AVR/Toolchain-AVR-gcc.cmake)
 
-# Allow assembler
 enable_language(ASM)
 
-project(AVR_ATMEGA328P_TEMPLATE)
+project(AVR_ATMEGA328P_BL)
 
-## AVR Chip Configuration
-# Set the CPU Freq coresponding with fusebit settings
+#--------------------------------------------------------------------------------------------------------
+# AVR chip configuration
+#--------------------------------------------------------------------------------------------------------
+
 set(F_CPU 16000000UL)
-# CPU definition, you can find the list here:
-# https://gcc.gnu.org/onlinedocs/gcc/AVR-Options.html
-set(MMCU atmega328p)
+set(MMCU  atmega328p)
 
-# Default Baudrate for UART, read avr include/util/setbaud.h for usage
-# set(BAUD 9600)
-
-# The programmer to use, read avrdude manual for list
+# Programmer
 set(PROG_TYPE usbasp)
 
-# AVR Fuses, must be in concordance with your hardware and F_CPU
-# http://eleccelerator.com/fusecalc/fusecalc.php?chip=atmega328p
-set(E_FUSE 0xfd)
-set(H_FUSE 0xda)
-set(L_FUSE 0xfd)
-set(LOCK_BIT 0xff)
+# Fuses:
+#   L_FUSE 0xfd -> external crystal 8–16 MHz, full swing
+#   H_FUSE 0xd8 -> BOOTSZ=00 (4 KB bootloader at 0x7000), BOOTRST=0 (boot from bootloader)
+#   E_FUSE 0xfd -> BOD 2.7 V
+#   LOCK   0xff -> no lock
+set(L_FUSE  0xfd)
+set(H_FUSE  0xd8)
+set(E_FUSE  0xfd)
+set(LOCK_BIT 0xcf)
+
+# Start address for the linker (32KB - 4KB = 0x7000)
+set(BOOT_START_ADDR 0x7000)
+
+#--------------------------------------------------------------------------------------------------------
+# Build options
+#--------------------------------------------------------------------------------------------------------
+
+if(NOT DEFINED DEVICE_ID)
+    set(DEVICE_ID 0x0000000000000000)
+endif()
+
+if(NOT DEFINED ENCR_KEY)
+    set(ENCR_KEY "{0x21,0xBB,0xA1,0x8D,0xF4,0x9B,0x1E,0x77,0x26,0x6F,0x80,0x92,0x4C,0x35,0xE6,0xB8}")
+endif() 
+include(${CMAKE_CURRENT_SOURCE_DIR}/../cmake/parse_encr_key.cmake)
+parse_encr_key("${ENCR_KEY}" ENCR_KEY)
+
+#--------------------------------------------------------------------------------------------------------
+# Project info
+#--------------------------------------------------------------------------------------------------------
+
+message(STATUS "")
+message(STATUS "===========================================================================================")
+message(STATUS "              ATmega328P Arduino Uno R3 — Bootloader configuration")
+message(STATUS "-------------------------------------------------------------------------------------------")
+message(STATUS "   DEVICE_ID = ${DEVICE_ID}")
+message(STATUS "   ENCR_KEY  = ${ENCR_KEY}")
+message(STATUS "   BOOT START= ${BOOT_START_ADDR}")
+message(STATUS "===========================================================================================")
+message(STATUS "")
+
+#--------------------------------------------------------------------------------------------------------
+# Include directories
+#--------------------------------------------------------------------------------------------------------
 
 set(INCLUDE_DIRS
-	./inc	
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/CRC
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/tiny-AES-c
 )
+
+#--------------------------------------------------------------------------------------------------------
+# Sources
+#--------------------------------------------------------------------------------------------------------
 
 set(C_SRCS
-	./src/main.c
-	./src/debug.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/main_app.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface/bl_key_drv.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface/bl_status_led_drv.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface/bl_usart_drv.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface/core_drv.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface/bl_flash_drv.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/CRC/crc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/tiny-AES-c/aes.c
 )
 
-set(ASM_SRCS
+set(ASM_SRCS)
 
-)
-
-set(GLOBAL_DEFINES
--DF_CPU=${F_CPU}
-# -DBAUD=${BAUD}
-)
-
-set(LINKED_LIBS
-
-)
-
-
-
-link_directories(
-
-)
+#--------------------------------------------------------------------------------------------------------
+# Build
+#--------------------------------------------------------------------------------------------------------
 
 include_directories(${INCLUDE_DIRS})
-add_definitions(${GLOBAL_DEFINES})
+add_definitions(-DF_CPU=${F_CPU} -DDEVICE_ID=${DEVICE_ID} -DENCR_KEY=${ENCR_KEY})
 
-include(    ../config/AVR/AVR_compiler_flags.cmake)
+# Include compiler and linker flags from external file
+include(../config/AVR/AVR_compiler_flags.cmake)
 add_compile_options(${COMPILE_OPTIONS})
-# generate elf file
+
+# Create the executable using the provided macro
 add_AVR_executable(${CMAKE_PROJECT_NAME} ${C_SRCS} ${ASM_SRCS})
 
-AVR_link_libraries(${CMAKE_PROJECT_NAME} ${LINKED_LIBS})
+# FIX: Linker relocation must target the .elf file created by the macro
+target_link_options(${CMAKE_PROJECT_NAME}.elf PRIVATE "-Wl,--section-start=.text=${BOOT_START_ADDR}")
+
+AVR_link_libraries(${CMAKE_PROJECT_NAME})

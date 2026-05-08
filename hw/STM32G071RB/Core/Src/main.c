@@ -16,18 +16,25 @@
  ******************************************************************************
  */
 
-#include <stdint.h>
-#include "main.h"
-#include "core_init.h"
+#include "stm32g070xx.h"
+#include "main_app.h"
 
 #if !defined(__SOFT_FP__) && defined(__ARM_FP)
   #warning "FPU is not initialized, but the project is compiling for an FPU. Please initialize the FPU before use."
 #endif
 
+static void core_init(void);
+
 int main(void)
 {
-  core_init();
+  core_init(); // for specyfic setup other than default MCU deault you can init core before jumping to bootloader
 
+  main_app();
     /* Loop forever */
 	for(;;);
+  return 0;
+}
+
+static void core_init(void)
+{
 }

@@ -96,20 +96,22 @@ add_custom_target( size ALL COMMAND ${CMAKE_SIZE} -C --mcu=${MMCU} --format=avr 
 # check if programmer software is available 
 find_program(AVR_Programmer avrdude)
 if(AVR_Programmer)
-	message(STATUS "AVR_Programmer avrdude was found, you can use defined targets: \r\n\tflash,\r\n\terase,\r\n\twrite_fuses,\r\n\tread_fuses\r\n\tread_flash.")
+	message(STATUS "AVR_Programmer avrdude was found, you can use defined targets: \r\n\tflash,\r\n\terase,\r\n\twrite_fuses,\r\n\tread_fuses\r\n\tread_flash")
 else()
 	message(STATUS "AVR_Programmer was not found.")    
 endif()
 # Upload the firmware with avrdude
-add_custom_target(flash avrdude -c ${PROG_TYPE} -p ${MMCU} -D -U flash:w:${CMAKE_SOURCE_DIR}/Build/${hex_file}:i DEPENDS size erase)
+add_custom_target(flash ${AVR_Programmer} -c ${PROG_TYPE} -p ${MMCU} -D -U flash:w:${CMAKE_SOURCE_DIR}/Build/${hex_file}:i DEPENDS size erase)
 # Erase the chip via avrdude
-add_custom_target(erase avrdude -p ${MMCU} -c ${PROG_TYPE} -e)
+add_custom_target(erase ${AVR_Programmer} -p ${MMCU} -c ${PROG_TYPE} -e)
 # Write AVR Fuses via avrdude
-add_custom_target(write_fuses avrdude -p ${MMCU} -c ${PROG_TYPE} -U lfuse:w:${L_FUSE}:m -U hfuse:w:${H_FUSE}:m -U efuse:w:${E_FUSE}:m)
+add_custom_target(write_fuses ${AVR_Programmer} -p ${MMCU} -c ${PROG_TYPE} -U lfuse:w:${L_FUSE}:m -U hfuse:w:${H_FUSE}:m -U efuse:w:${E_FUSE}:m)
+# Write Avr Lock Bits via avrdude
+add_custom_target(write_lock ${AVR_Programmer} -p ${MMCU} -c ${PROG_TYPE} -U lock:w:${LOCK_BIT}:m)
 # Read AVR Fuses via avrdude
-add_custom_target(read_fuses avrdude -p ${MMCU} -c ${PROG_TYPE} -U lfuse:r:${CMAKE_SOURCE_DIR}/lfuse_readed.txt:h -U hfuse:r:${CMAKE_SOURCE_DIR}/hfuse_readed.txt:h -U efuse:r:${CMAKE_SOURCE_DIR}/efuse_readed.txt:h)
+add_custom_target(read_fuses ${AVR_Programmer} -p ${MMCU} -c ${PROG_TYPE} -U lfuse:r:${CMAKE_SOURCE_DIR}/lfuse_readed.txt:h -U hfuse:r:${CMAKE_SOURCE_DIR}/hfuse_readed.txt:h -U efuse:r:${CMAKE_SOURCE_DIR}/efuse_readed.txt:h)
 # Read AVR Fuses via avrdude
-add_custom_target(read_flash avrdude -p ${MMCU} -c ${PROG_TYPE} -b 115200 -U flash:r:${CMAKE_SOURCE_DIR}/readed_firmware.hex:i)
+add_custom_target(read_flash ${AVR_Programmer} -p ${MMCU} -c ${PROG_TYPE} -b 115200 -U flash:r:${CMAKE_SOURCE_DIR}/readed_firmware.hex:i)
 endmacro(add_AVR_executable)
 
 

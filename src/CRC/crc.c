@@ -34,6 +34,12 @@
 #define CRC_MSB_MASK (0x80000000UL)
 #define CRC_LSB_MASK (0x00000001UL)
 
+#ifdef UNIT_TESTS
+#define PRIVATE
+#else
+#define PRIVATE static
+#endif
+
 /* ===================== Internal helpers ===================== */
 
 /**
@@ -45,7 +51,7 @@
  * @param  value  32-bit input word.
  * @return Bit-reversed copy of @p value.
  */
-static uint32_t rev_u32(uint32_t value)
+PRIVATE uint32_t rev_u32(uint32_t value)
 {
     uint32_t result = 0;
 

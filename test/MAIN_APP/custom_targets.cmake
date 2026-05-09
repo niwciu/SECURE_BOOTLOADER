@@ -99,7 +99,7 @@ if(CPPCHECK_EXECUTABLE)
             --std=c99
             --suppress=missingIncludeSystem
             --suppress=missingInclude
-            --suppress=unusedFunction:../../../src/main_app.c
+            --suppress=unusedFunction:../../../src/main_app.c:87
 			--checkers-report=cppcheck_checkers_report.txt
 			--error-exitcode=1
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

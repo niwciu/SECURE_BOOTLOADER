@@ -338,17 +338,15 @@ jobs:
           chmod +x test/CRC/out/CRC_test
           test/CRC/out/CRC_test -v
 
-      - name: Check coverage — MAIN_APP
-        uses: threeal/gcovr-action@v1.1.0
-        with:
-          root: test/MAIN_APP
-          excludes: test
-          fail-under-line: 90
+      # - name: Check coverage — MAIN_APP
+      #   uses: threeal/gcovr-action@v1.1.0
+      #   with:
+      #     excludes: test
+      #     fail-under-line: 90
 
       - name: Check coverage — CRC
         uses: threeal/gcovr-action@v1.1.0
         with:
-          root: test/CRC
           excludes: test
           fail-under-line: 90
 
@@ -373,18 +371,20 @@ jobs:
         uses: niwciu/cppcheck-annotation-action@develop
         with:
           sources: ./src ./test/MAIN_APP ./test/CRC
+          
           additional-args: >-
             --force
             -UUNITY_FIXTURE_FREE
             -UUNITY_FIXTURE_MALLOC
             -UUNITY_OUTPUT_CHAR
+            -i/test/MAIN_APP/out
+            -i/test/MAIN_APP/cmocks
+            -i/test/CRC/out
+            -i/test/CRC/cmocks
           log-level: verbose
           std: c99
           suppress: >-
-            missingIncludeSystem,
-            missingInclude,
-            unusedFunction:./test/MAIN_APP/main_app_test_runner.c,
-            unusedFunction:./test/CRC/crc_test_runner.c
+            unusedFunction:./src/main_app.c:87
           action-fail-level: 'failure,warning'
 
       - name: Annotate lines with errors

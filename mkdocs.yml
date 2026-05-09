@@ -1,44 +1,40 @@
-site_name: OBSERVER Embedded C Library
-site_description: Automatycznie generowana z README.md + raporty
-site_url: https://niwciu.github.io/OBSERVER/
-repo_url: https://github.com/niwciu/OBSERVER
-
+site_name: Secure Bootloader
+site_description: Platform-independent secure bootloader for embedded systems — AES-CBC encrypted, CRC-32 verified firmware updates over UART.
+site_url: https://niwciu.github.io/SECURE_BOOTLOADER/
+repo_url: https://github.com/niwciu/SECURE_BOOTLOADER
+repo_name: niwciu/SECURE_BOOTLOADER
 
 theme:
   name: material
   language: en
-  logo: assets/logo.png
-  favicon: assets/logo.png
   features:
     - navigation.instant
     - navigation.top
     - navigation.sections
     - navigation.expand
     - navigation.footer
+    - navigation.indexes
     - content.code.copy
-    # - content.action.edit
     - content.tabs.link
     - content.tooltips
     - content.code.annotate
     - header.autohide
-    - footer.social
   palette:
-    #dark theme
-    - scheme: slate  
+    - scheme: slate
       toggle:
         icon: material/weather-sunny
-        name: Dark mode
-      # primary: green
+        name: Switch to light mode
       accent: deep purple
-    #light theme
-    - scheme: default  
+    - scheme: default
       toggle:
         icon: material/weather-night
-        name: Light mode
-      primary: blue
+        name: Switch to dark mode
+      primary: blue grey
       accent: deep orange
+
 markdown_extensions:
   - attr_list
+  - md_in_html
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
@@ -53,27 +49,42 @@ markdown_extensions:
   - pymdownx.details
   - toc:
       permalink: true
-      toc_depth: 2
+      toc_depth: 3
   - tables
-  - pymdownx.highlight
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.tasklist:
       custom_checkbox: true
+  - def_list
+  - footnotes
 
 nav:
-  - Home: README.md
-  - Examples info: examples/README.md
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Architecture:
+    - architecture/index.md
+    - System Overview: architecture/overview.md
+    - Wire Protocol: architecture/protocol.md
+    - Security Model: architecture/security.md
+  - Porting Guide:
+    - porting/index.md
+    - Hardware Drivers: porting/hw-drivers.md
+    - Configuration Reference: porting/configuration.md
+  - Build System: build/cmake.md
+  - Testing: testing/unit-tests.md
   - Reports: reports.md
-  - Doxygen docu: doxygen/observer_lib_doc/html/index.html
 
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/niwciu/OBSERVER
+      link: https://github.com/niwciu/SECURE_BOOTLOADER
     - icon: fontawesome/solid/envelope
       link: mailto:niwciu@gmail.com
     - icon: simple/youtube
       link: https://www.youtube.com/@MyEmbeddedWay/videos
 
-copyright: Copyright &copy; 2025 niwciu
+copyright: Copyright &copy; 2026 niwciu

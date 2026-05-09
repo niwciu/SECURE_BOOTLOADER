@@ -1,0 +1,529 @@
+name: CI Pipeline
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - main
+      - develop  # protected branches — require PR
+  pull_request:
+    branches:
+      - main
+      - develop
+
+env:
+  path: ./src
+  CCN: 12
+  Threshold: nloc=30
+  arguments: 4
+  language: cpp
+  verbose: true
+
+jobs:
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # UNIT TEST BUILDS (host)
+  # ────────────────────────────────────────────────────────────────────────────
+
+  build_unit_tests_MAIN_APP:
+    name: Build Unit Tests — MAIN_APP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Build
+        working-directory: test/MAIN_APP
+        run: |
+          cmake -S . -B out -G Ninja -DBUILD_TYPE=Debug
+          cmake --build out
+
+      - name: Save build artifacts
+        uses: actions/upload-artifact@v8
+        with:
+          name: unit_tests_MAIN_APP
+          path: test/MAIN_APP/out
+          if-no-files-found: warn
+          retention-days: 1
+          overwrite: true
+
+  build_unit_tests_CRC:
+    name: Build Unit Tests — CRC
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Build
+        working-directory: test/CRC
+        run: |
+          cmake -S . -B out -G Ninja -DBUILD_TYPE=Debug
+          cmake --build out
+
+      - name: Save build artifacts
+        uses: actions/upload-artifact@v8
+        with:
+          name: unit_tests_CRC
+          path: test/CRC/out
+          if-no-files-found: warn
+          retention-days: 1
+          overwrite: true
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # HW TARGET BUILDS
+  # ────────────────────────────────────────────────────────────────────────────
+
+  build_STM32G070RB:
+    name: Build STM32G070RB
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Install Arm GNU Toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+      - name: Get Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Build (Debug, SW CRC)
+        working-directory: hw/STM32G070RB
+        run: |
+          cmake -S . -B out -G Ninja -DBUILD_TYPE=Debug -DCRC_MODULE=SW
+          cmake --build out
+
+  build_STM32G071RB:
+    name: Build STM32G071RB
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Install Arm GNU Toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+      - name: Get Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Build (Debug, SW CRC)
+        working-directory: hw/STM32G071RB
+        run: |
+          cmake -S . -B out -G Ninja -DBUILD_TYPE=Debug -DCRC_MODULE=SW
+          cmake --build out
+
+  build_STM32G474RE:
+    name: Build STM32G474RE
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Install Arm GNU Toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+      - name: Get Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Build (Debug, SW CRC)
+        working-directory: hw/STM32G474RE
+        run: |
+          cmake -S . -B out -G Ninja -DBUILD_TYPE=Debug -DCRC_MODULE=SW
+          cmake --build out
+
+  build_STM32G070RB_HW_CRC:
+    name: Build STM32G070RB (HW CRC)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Install Arm GNU Toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+      - name: Get Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Build (Debug, HW CRC)
+        working-directory: hw/STM32G070RB
+        run: |
+          cmake -S . -B out_hw_crc -G Ninja -DBUILD_TYPE=Debug -DCRC_MODULE=HW
+          cmake --build out_hw_crc
+
+  build_STM32G071RB_HW_CRC:
+    name: Build STM32G071RB (HW CRC)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Install Arm GNU Toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+      - name: Get Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Build (Debug, HW CRC)
+        working-directory: hw/STM32G071RB
+        run: |
+          cmake -S . -B out_hw_crc -G Ninja -DBUILD_TYPE=Debug -DCRC_MODULE=HW
+          cmake --build out_hw_crc
+
+  build_STM32G474RE_HW_CRC:
+    name: Build STM32G474RE (HW CRC)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Install Arm GNU Toolchain
+        uses: carlosperate/arm-none-eabi-gcc-action@v1
+
+      - name: Get Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Build (Debug, HW CRC)
+        working-directory: hw/STM32G474RE
+        run: |
+          cmake -S . -B out_hw_crc -G Ninja -DBUILD_TYPE=Debug -DCRC_MODULE=HW
+          cmake --build out_hw_crc
+
+  build_ATMEGA328P:
+    name: Build ATMEGA328P (Arduino Uno R3)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Install AVR toolchain
+        run: sudo apt-get update && sudo apt-get install -y gcc-avr avr-libc
+
+      - name: Get Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Build (Debug)
+        working-directory: hw/ATMEGA328P_ARDUINO_UNO_R3
+        run: |
+          cmake -S . -B out -G Ninja -DBUILD_TYPE=Debug
+          cmake --build out
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # QUALITY GATES  (run in parallel once all builds pass)
+  # ────────────────────────────────────────────────────────────────────────────
+
+  run_clang-format_check:
+    name: Run Clang-format Check
+    runs-on: ubuntu-latest
+    needs:
+      - build_unit_tests_MAIN_APP
+      - build_unit_tests_CRC
+      - build_STM32G070RB
+      - build_STM32G071RB
+      - build_STM32G474RE
+      - build_STM32G070RB_HW_CRC
+      - build_STM32G071RB_HW_CRC
+      - build_STM32G474RE_HW_CRC
+      - build_ATMEGA328P
+    strategy:
+      matrix:
+        path:
+          - check: 'src'
+            exclude: ''
+          - check: 'test'
+            exclude: '(unity|cmock|template|__embedded_target_manager)'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run clang-format check
+        uses: jidicula/clang-format-action@v4.13.0
+        with:
+          clang-format-version: '18'
+          check-path: ${{ matrix.path['check'] }}
+          exclude-regex: ${{ matrix.path['exclude'] }}
+
+  run_unit_tests:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    needs:
+      - build_unit_tests_MAIN_APP
+      - build_unit_tests_CRC
+      - build_STM32G070RB
+      - build_STM32G071RB
+      - build_STM32G474RE
+      - build_STM32G070RB_HW_CRC
+      - build_STM32G071RB_HW_CRC
+      - build_STM32G474RE_HW_CRC
+      - build_ATMEGA328P
+    steps:
+      - name: Download MAIN_APP test artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: unit_tests_MAIN_APP
+          path: test/MAIN_APP/out
+
+      - name: Download CRC test artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: unit_tests_CRC
+          path: test/CRC/out
+
+      - name: Run MAIN_APP tests
+        run: |
+          chmod +x test/MAIN_APP/out/MAIN_APP_test
+          test/MAIN_APP/out/MAIN_APP_test -v
+
+      - name: Run CRC tests
+        run: |
+          chmod +x test/CRC/out/CRC_test
+          test/CRC/out/CRC_test -v
+
+  run_code_coverage_check:
+    name: Run Code Coverage Check
+    runs-on: ubuntu-latest
+    needs:
+      - build_unit_tests_MAIN_APP
+      - build_unit_tests_CRC
+      - build_STM32G070RB
+      - build_STM32G071RB
+      - build_STM32G474RE
+      - build_STM32G070RB_HW_CRC
+      - build_STM32G071RB_HW_CRC
+      - build_STM32G474RE_HW_CRC
+      - build_ATMEGA328P
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download MAIN_APP test artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: unit_tests_MAIN_APP
+          path: test/MAIN_APP/out
+
+      - name: Download CRC test artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: unit_tests_CRC
+          path: test/CRC/out
+
+      - name: Run MAIN_APP tests (generate .gcda)
+        continue-on-error: true
+        run: |
+          chmod +x test/MAIN_APP/out/MAIN_APP_test
+          test/MAIN_APP/out/MAIN_APP_test -v
+
+      - name: Run CRC tests (generate .gcda)
+        continue-on-error: true
+        run: |
+          chmod +x test/CRC/out/CRC_test
+          test/CRC/out/CRC_test -v
+
+      - name: Check coverage — MAIN_APP
+        uses: threeal/gcovr-action@v1.1.0
+        with:
+          root: test/MAIN_APP
+          excludes: test
+          fail-under-line: 90
+
+      - name: Check coverage — CRC
+        uses: threeal/gcovr-action@v1.1.0
+        with:
+          root: test/CRC
+          excludes: test
+          fail-under-line: 90
+
+  run_cppcheck:
+    name: Run CppCheck
+    runs-on: ubuntu-latest
+    needs:
+      - build_unit_tests_MAIN_APP
+      - build_unit_tests_CRC
+      - build_STM32G070RB
+      - build_STM32G071RB
+      - build_STM32G474RE
+      - build_STM32G070RB_HW_CRC
+      - build_STM32G071RB_HW_CRC
+      - build_STM32G474RE_HW_CRC
+      - build_ATMEGA328P
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Run cppcheck
+        uses: niwciu/cppcheck-annotation-action@develop
+        with:
+          sources: ./src ./test/MAIN_APP ./test/CRC
+          additional-args: >-
+            --force
+            -UUNITY_FIXTURE_FREE
+            -UUNITY_FIXTURE_MALLOC
+            -UUNITY_OUTPUT_CHAR
+          log-level: verbose
+          std: c99
+          suppress: >-
+            missingIncludeSystem,
+            missingInclude,
+            unusedFunction:./test/MAIN_APP/main_app_test_runner.c,
+            unusedFunction:./test/CRC/crc_test_runner.c
+          action-fail-level: 'failure,warning'
+
+      - name: Annotate lines with errors
+        if: always()
+        uses: yuzutech/annotations-action@v0.5.0
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          title: 'Results of CppCheck'
+          input: 'annotations.json'
+
+  run_code_complexity_check:
+    name: Run Code Complexity Check
+    runs-on: ubuntu-latest
+    needs:
+      - build_unit_tests_MAIN_APP
+      - build_unit_tests_CRC
+      - build_STM32G070RB
+      - build_STM32G071RB
+      - build_STM32G474RE
+      - build_STM32G070RB_HW_CRC
+      - build_STM32G071RB_HW_CRC
+      - build_STM32G474RE_HW_CRC
+      - build_ATMEGA328P
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Lizard Runner
+        uses: niwciu/Lizard-Runner@develop
+        with:
+          path: ${{ env.path }}
+          CCN: ${{ env.CCN }}
+          Threshold: ${{ env.Threshold }}
+          arguments: ${{ env.arguments }}
+          language: ${{ env.language }}
+          verbose: ${{ env.verbose }}
+
+  # ────────────────────────────────────────────────────────────────────────────
+  # REPORT GENERATION  (after all quality gates pass)
+  # ────────────────────────────────────────────────────────────────────────────
+
+  generate_code_coverage_report:
+    name: Generate Code Coverage Report
+    runs-on: ubuntu-latest
+    needs:
+      - run_clang-format_check
+      - run_unit_tests
+      - run_code_coverage_check
+      - run_cppcheck
+      - run_code_complexity_check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download MAIN_APP test artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: unit_tests_MAIN_APP
+          path: test/MAIN_APP/out
+
+      - name: Download CRC test artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: unit_tests_CRC
+          path: test/CRC/out
+
+      - name: Run MAIN_APP tests (generate .gcda)
+        continue-on-error: true
+        run: |
+          chmod +x test/MAIN_APP/out/MAIN_APP_test
+          test/MAIN_APP/out/MAIN_APP_test -v
+
+      - name: Run CRC tests (generate .gcda)
+        continue-on-error: true
+        run: |
+          chmod +x test/CRC/out/CRC_test
+          test/CRC/out/CRC_test -v
+
+      - name: Create report folder
+        run: mkdir gcovr_report
+
+      - name: Generate MAIN_APP coverage report
+        uses: threeal/gcovr-action@v1.1.0
+        with:
+          root: test/MAIN_APP
+          excludes: test
+          html-out: ./gcovr_report/MAIN_APP_coverage.html
+          html-details: true
+          html-title: MAIN_APP Test Coverage Report
+          html-theme: github.dark-green
+
+      - name: Generate CRC coverage report
+        uses: threeal/gcovr-action@v1.1.0
+        with:
+          root: test/CRC
+          excludes: test
+          html-out: ./gcovr_report/CRC_coverage.html
+          html-details: true
+          html-title: CRC Test Coverage Report
+          html-theme: github.dark-green
+
+      - name: Save coverage report
+        uses: actions/upload-artifact@v8
+        with:
+          name: Code_Coverage_Report
+          path: ./gcovr_report
+          if-no-files-found: warn
+          retention-days: 5
+          overwrite: true
+
+  generate_code_complexity_report:
+    name: Generate Code Complexity Report
+    runs-on: ubuntu-latest
+    needs:
+      - run_clang-format_check
+      - run_unit_tests
+      - run_code_coverage_check
+      - run_cppcheck
+      - run_code_complexity_check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Lizard Runner
+        uses: niwciu/Lizard-Runner@develop
+        with:
+          path: ${{ env.path }}
+          CCN: ${{ env.CCN }}
+          Threshold: ${{ env.Threshold }}
+          arguments: ${{ env.arguments }}
+          language: ${{ env.language }}
+          verbose: ${{ env.verbose }}
+          output_file: ./code_complexity_report.html
+
+      - name: Save complexity report
+        uses: actions/upload-artifact@v8
+        with:
+          name: Code_Complexity_Report
+          path: ./code_complexity_report.html
+          if-no-files-found: warn
+          retention-days: 5
+          overwrite: true

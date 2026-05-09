@@ -8,12 +8,12 @@
  * @copyright Copyright (c) 2026
  *
  */
-#ifndef _BL_STATUS_LED_DRV_H_
-#define _BL_STATUS_LED_DRV_H_
+#ifndef BL_STATUS_LED_DRV_H_
+#define BL_STATUS_LED_DRV_H_
 
 void init_bl_status_led(void);
 void deinit_bl_status_led_port(void);
 void deinit_bl_status_led_clk(void);
-void toogle_bl_led(void);
+void toggle_bl_led(void);
 
-#endif /* _BL_STATUS_LED_DRV_H_ */
+#endif /* BL_STATUS_LED_DRV_H_ */

@@ -9,7 +9,7 @@
  *
  */
 #include "bl_usart_drv.h"
-#include "stm32g070xx.h"
+#include "stm32g071xx.h"
 #include "bl_hw_config.h"
 
 #define USART_ICR_CLEAR_IRQ_Msk 0x00123BFFUL
@@ -77,7 +77,7 @@ void send_byte_table(const uint8_t *d, size_t l)
 
 void send_byte(uint8_t b)
 {
-    uint32_t timeout = 1000000; // ToDo add corelation with FCPU and Baud
+    uint32_t timeout = 1000000UL;
 
     while (!(USART2->ISR & USART_ISR_TXE_TXFNF))
     {
@@ -98,21 +98,17 @@ void USART2_IRQHandler(void)
 {
     uint32_t isr = USART2->ISR;
 
-    // ---------------- ERROR HANDLING ----------------
-
     if (isr & (USART_ISR_ORE |
                USART_ISR_FE |
                USART_ISR_NE |
                USART_ISR_PE))
     {
-        // Clear all possible UART errors
         USART2->ICR =
             USART_ICR_ORECF |
             USART_ICR_FECF |
             USART_ICR_NECF |
             USART_ICR_PECF;
 
-        // Flush RX data if something is pending
         if (isr & USART_ISR_RXNE_RXFNE)
         {
             (void)USART2->RDR;
@@ -120,8 +116,6 @@ void USART2_IRQHandler(void)
 
         return;
     }
-
-    // ---------------- RX ----------------
 
     if (isr & USART_ISR_RXNE_RXFNE)
     {

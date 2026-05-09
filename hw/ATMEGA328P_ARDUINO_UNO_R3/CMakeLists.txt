@@ -74,8 +74,8 @@ message(STATUS "")
 #--------------------------------------------------------------------------------------------------------
 
 set(INCLUDE_DIRS
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface
+    ${CMAKE_CURRENT_SOURCE_DIR}/inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Bl_drv_interface
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/CRC
     ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/tiny-AES-c
@@ -88,11 +88,11 @@ set(INCLUDE_DIRS
 set(C_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/main_app.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface/bl_key_drv.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface/bl_status_led_drv.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface/bl_usart_drv.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface/core_drv.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Bl_drv_interface/bl_flash_drv.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Bl_drv_interface/bl_key_drv.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Bl_drv_interface/bl_status_led_drv.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Bl_drv_interface/bl_usart_drv.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Bl_drv_interface/core_drv.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Bl_drv_interface/bl_flash_drv.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/CRC/crc.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../lib/tiny-AES-c/aes.c
 )

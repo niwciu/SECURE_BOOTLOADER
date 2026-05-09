@@ -12,8 +12,6 @@
 #include "bl_key_drv.h"
 #include "stm32g474xx.h"
 
-// #define GPIOC_MODER_RESET_VAL 0xFFFFFFFF
-
 void init_bl_key(void)
 {
     // PC13 - NUCLEO-G474RE B1 USER button, active LOW

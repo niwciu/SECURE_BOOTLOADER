@@ -8,14 +8,14 @@
  * @copyright Copyright (c) 2026
  * 
  */
-#ifndef _BL_KEY_DRV_H_
-#define _BL_KEY_DRV_H_
+#ifndef BL_KEY_DRV_H_
+#define BL_KEY_DRV_H_
 
- #include <stdbool.h>
+#include <stdbool.h>
 
 void init_bl_key(void);
 void deinit_bl_key(void);
 void deinit_bl_key_clk(void);
 bool bl_key_pressed(void);
 
-#endif /* _BL_KEY_DRV_H_ */
+#endif /* BL_KEY_DRV_H_ */

@@ -1,0 +1,52 @@
+PLACEHOLDER — system_stm32xxxx.c
+=================================
+
+BOOTLOADER APPROACH — THIS FILE IS NOT COMPILED
+-------------------------------------------------
+For this bootloader the SystemInit() call is commented out in the startup
+file and system_stm32xxxx.c is not added to CMakeLists.txt.
+
+Reasons it is safe to skip:
+
+  1. Clock         The MCU boots from its internal HSI oscillator at the
+                   power-on reset default (16 MHz on STM32G0 and STM32G4).
+                   That is sufficient for 115200 baud UART.
+                   CPU_F in bl_hw_config.h must match this reset default.
+
+  2. Flash latency At the HSI reset-default frequency, 0 wait states is
+                   correct on all STM32 families used in this project.
+
+  3. FPU enable    SystemInit() on Cortex-M4 targets enables the FPU via
+                   SCB->CPACR when __FPU_PRESENT==1 && __FPU_USED==1.
+                   The bootloader compiles with -mfloat-abi=soft, so
+                   __FPU_USED is 0 and the FPU block is already skipped
+                   by the #if inside SystemInit(). Removing the file
+                   changes nothing.
+
+  4. VTOR          The standard CubeMX system_stm32xxxx.c only relocates
+                   VTOR when USER_VECT_TAB_ADDRESS is defined (it is not).
+                   The bootloader sits at flash base 0x08000000, which is
+                   the reset default — no relocation needed.
+
+  5. SystemCoreClock variable
+                   Never read by the bootloader. The constant CPU_F in
+                   bl_hw_config.h is used directly instead.
+
+Required startup file change
+-----------------------------
+See Core/Startup/PLACEHOLDER.md for the assembly edit that must be made
+to comment out the SystemInit call and add a .weak declaration.
+
+This file is MCU-FAMILY-SPECIFIC
+----------------------------------
+If for any reason you decide to include system_stm32xxxx.c, note that
+each STM32 family has its own version — it is NOT the same across variants:
+
+    system_stm32g0xx.c    → STM32G0  (e.g. G070, G071, G081)
+    system_stm32g4xx.c    → STM32G4  (e.g. G431, G474, G491)
+    system_stm32l4xx.c    → STM32L4  (e.g. L432, L476, L496)
+    system_stm32f4xx.c    → STM32F4  (e.g. F401, F405, F446)
+    system_stm32h7xx.c    → STM32H7  (e.g. H743, H750)
+
+Where to get it: STM32CubeMX project export, or the STM32Cube firmware
+package for your family at github.com/STMicroelectronics/STM32Cube<family>.

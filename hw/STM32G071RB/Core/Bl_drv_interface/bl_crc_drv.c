@@ -17,7 +17,7 @@
  */
 
 #include "crc_api.h"
-#include "stm32g070xx.h"
+#include "stm32g071xx.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -25,32 +25,11 @@
 #define CRC_INIT_VAL   0xFFFFFFFFUL
 #define CRC_XOR_OUT    0xFFFFFFFFUL
 
-/* ========================================================= */
-
 void CRC_hw_init(void)
 {
     /* enable CRC clock */
     RCC->AHBENR |= RCC_AHBENR_CRCEN;
 }
-
-void CRC_hw_deinit(void)
-{
-    /* enable CRC clock */
-    RCC->AHBENR &= ~RCC_AHBENR_CRCEN;
-}
-
-/* ========================================================= */
-/* NOTE:
- * rev_u32 is handled by hardware via CRC_CR_REV_OUT
- */
-uint32_t rev_u32(uint32_t d)
-{
-    (void)d;
-
-    return CRC->DR;
-}
-
-/* ========================================================= */
 
 uint32_t CRC_init(void)
 {
@@ -70,19 +49,15 @@ uint32_t CRC_init(void)
     return CRC->DR;
 }
 
-/* ========================================================= */
-
 uint32_t CRC_add_byte(uint32_t crc, uint8_t byte)
 {
     (void)crc;
 
-    /* feed yteyte-wise into CRC DR */
+    /* feed byte-wise into CRC DR */
     *((volatile uint8_t *)&CRC->DR) = byte;
 
     return CRC->DR;
 }
-
-/* ========================================================= */
 
 uint32_t CRC_add_byte_tab(uint32_t crc, uint8_t const *data, size_t dataLen)
 {
@@ -95,8 +70,6 @@ uint32_t CRC_add_byte_tab(uint32_t crc, uint8_t const *data, size_t dataLen)
 
     return CRC->DR;
 }
-
-/* ========================================================= */
 
 uint32_t CRC_result(uint32_t crc)
 {

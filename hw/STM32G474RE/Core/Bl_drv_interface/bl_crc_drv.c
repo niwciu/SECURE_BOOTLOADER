@@ -16,9 +16,10 @@
  * 
  */
 
-#include "bl_crc_drv.h"
+#include "crc_api.h"
 
 #include "stm32g474xx.h"
+#include <stddef.h>
 
 #define CRC_INIT_VAL   0xFFFFFFFFUL
 #define CRC_XOR_OUT    0xFFFFFFFFUL
@@ -29,18 +30,7 @@ void CRC_hw_init(void)
     RCC->AHB1ENR |= RCC_AHB1ENR_CRCEN;
 }
 
-uint32_t rev_u32(uint32_t d)
-{
-    (void)d;
-    /*
-     * handled by hardware:
-     * CRC_CR_REV_OUT
-     */
-
-    return CRC->DR;
-}
-
-uint32_t CRC_init()
+uint32_t CRC_init(void)
 {
     CRC->INIT = CRC_INIT_VAL;
 

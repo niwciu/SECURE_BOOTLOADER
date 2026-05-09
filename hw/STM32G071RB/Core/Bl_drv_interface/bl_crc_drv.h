@@ -15,17 +15,16 @@
  * 
  */
 
-#ifndef _BL_CRC_DRV_H_
-#define _BL_CRC_DRV_H_
+#ifndef BL_CRC_DRV_H_
+#define BL_CRC_DRV_H_
 
 #include <stdint.h>
 #include <stddef.h>
 
 void CRC_hw_init(void);
-uint32_t rev_u32(uint32_t d);
 uint32_t CRC_init(void);
 uint32_t CRC_add_byte(uint32_t crc, uint8_t b);
 uint32_t CRC_add_byte_tab(uint32_t crc, uint8_t const *data, size_t dataLen);
 uint32_t CRC_result(uint32_t crc);
 
-#endif /* _BL_CRC_DRV_H_*/
+#endif /* BL_CRC_DRV_H_ */

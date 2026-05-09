@@ -37,7 +37,7 @@ void deinit_bl_status_led_clk(void)
     RCC->IOPENR &= ~RCC_IOPENR_GPIOAEN;
 }
 
-void toogle_bl_led(void)
+void toggle_bl_led(void)
 {
     GPIOA->ODR ^= (GPIO_ODR_OD5);
 }

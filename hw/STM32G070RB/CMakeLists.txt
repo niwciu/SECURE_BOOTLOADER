@@ -140,7 +140,7 @@ set(APP_C_SOURCES
 if(CRC_MODULE STREQUAL "SW")
 
     list(APPEND APP_C_SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/CRC/crc_sw.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/CRC/crc.c
     )
 else()
     list(APPEND APP_C_SOURCES

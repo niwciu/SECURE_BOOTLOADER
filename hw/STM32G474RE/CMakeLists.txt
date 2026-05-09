@@ -71,7 +71,7 @@ parse_encr_key("${ENCR_KEY}" ENCR_KEY)
 
 message(STATUS "")
 message(STATUS "===========================================================================================")
-message(STATUS "                    HW_STM32G071RB project configuration")
+message(STATUS "                    HW_STM32G474RE project configuration")
 message(STATUS "-------------------------------------------------------------------------------------------")
 message(STATUS " Available options:")
 message(STATUS "   BUILD_TYPE  : <Debug, Release> (default: Debug)")
@@ -122,7 +122,12 @@ set(APP_C_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/syscalls.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/sysmem.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/system_stm32g4xx.c
+    # system_stm32g4xx.c is intentionally omitted (bootloader approach):
+    #   - SystemInit() call is commented out in startup_stm32g474xx.s
+    #   - MCU boots at HSI16 (16 MHz) by default — no clock config needed
+    #   - FPU init inside SystemInit() is a no-op with -mfloat-abi=soft
+    #   - SystemInit declared .weak in startup so the linker does not require it
+    # ${CMAKE_CURRENT_SOURCE_DIR}/Core/Src/system_stm32g4xx.c
 
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/main_app.c
 
@@ -167,7 +172,7 @@ set(APP_LIBS
 # COMPILER FLAGS 
 #--------------------------------------------------------------------------------------------------------
 
-set(MCPU "-mcpu=cortex-m0plus")
+set(MCPU "-mcpu=cortex-m4")
 set(LD_FILE "STM32G474XX_FLASH.ld")
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/../config/STM32/compiler_flags.cmake)

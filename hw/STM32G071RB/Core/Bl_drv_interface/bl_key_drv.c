@@ -10,9 +10,7 @@
  */
 
 #include "bl_key_drv.h"
-#include "stm32g070xx.h"
-
-// #define GPIOC_MODER_RESET_VAL 0xFFFFFFFF
+#include "stm32g071xx.h"
 
 void init_bl_key(void)
 {

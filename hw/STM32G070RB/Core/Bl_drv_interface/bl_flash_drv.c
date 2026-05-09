@@ -12,7 +12,7 @@
 #include "stm32g070xx.h"
 #include "bl_hw_config.h"
 
-#define BYTE_WROD_LEN 8
+#define BYTE_WORD_LEN 8
 #define BYTE_HALF_WORD_LEN 4
 
 static void FLASH_clearErrors(void);
@@ -41,24 +41,23 @@ void FLASH_lock(void)
     FLASH_waitBusy();
 }
 
-void FLASH_erasePage(uint32_t flas_page_no) 
+void FLASH_erasePage(uint32_t flash_page_no)
 {
-   
+
     FLASH_waitBusy();
     FLASH_clearErrors();
 
-    FLASH->CR |= FLASH_CR_PER; 
-    FLASH->CR &= ~FLASH_CR_PNB;  // Clear PNB bits before writing new page adr
-    FLASH->CR |= (flas_page_no << FLASH_CR_PNB_Pos);
+    FLASH->CR |= FLASH_CR_PER;
+    FLASH->CR &= ~FLASH_CR_PNB;
+    FLASH->CR |= (flash_page_no << FLASH_CR_PNB_Pos);
     FLASH->CR |= FLASH_CR_STRT;
 
     FLASH_waitBusy();
     FLASH->CR &= ~FLASH_CR_PER;
 } 
 
-void FLASH_write(uint32_t addr, uint32_t const *data, size_t dataLen) 
+void FLASH_write(uint32_t addr, uint32_t const *data, size_t dataLen)
 {
-    // Info in RM0454 site 60
     FLASH_waitBusy();
     FLASH_clearErrors();
     FLASH->CR |= FLASH_CR_PG; 
@@ -75,7 +74,7 @@ void FLASH_write(uint32_t addr, uint32_t const *data, size_t dataLen)
 
         FLASH->SR &= ~FLASH_SR_EOP;
 
-        addr += BYTE_WROD_LEN; // 
+        addr += BYTE_WORD_LEN;
     }
 
     FLASH->CR &= ~FLASH_CR_PG;

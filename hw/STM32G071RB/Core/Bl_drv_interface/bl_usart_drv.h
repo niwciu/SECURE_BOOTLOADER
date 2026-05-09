@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2026
  *
  */
-#ifndef _BL_USART_DRV_H_
-#define _BL_USART_DRV_H_
+#ifndef BL_USART_DRV_H_
+#define BL_USART_DRV_H_
 
 #include <stdint.h>
 #include <stddef.h>
@@ -25,4 +25,4 @@ void send_byte_table(const uint8_t *d, size_t l);
 void send_byte(uint8_t b);
 bool byte_transmission_complete(void);
 
-#endif /* _BL_USART_DRV_H_*/
+#endif /* BL_USART_DRV_H_ */

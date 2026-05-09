@@ -1,14 +1,15 @@
 /**
  * @file bl_flash_drv.h
  * @author niwciu (niwciu@gmail.com)
- * @brief 
+ * @brief Flash driver interface for STM32G474RE.
  * @version 1.0.0
  * @date 2026-05-05
- * 
+ *
  * @copyright Copyright (c) 2026
- * 
+ *
  */
-
+#ifndef BL_FLASH_DRV_H_
+#define BL_FLASH_DRV_H_
 
 #include <stdint.h>
 #include <stddef.h>
@@ -19,3 +20,4 @@ void FLASH_lock(void);
 void FLASH_erasePage(uint32_t flash_page_no);
 void FLASH_write(uint32_t addr, uint32_t const *data, size_t dataLen);
 
+#endif /* BL_FLASH_DRV_H_ */

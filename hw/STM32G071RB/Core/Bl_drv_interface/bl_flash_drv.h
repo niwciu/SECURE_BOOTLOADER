@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2026
  *
  */
-#ifndef _BL_FLASH_DRV_H_
-#define _BL_FLASH_DRV_H_
+#ifndef BL_FLASH_DRV_H_
+#define BL_FLASH_DRV_H_
 
 #include <stdint.h>
 #include <stddef.h>
@@ -20,4 +20,4 @@ void FLASH_lock(void);
 void FLASH_erasePage(uint32_t flash_page_no);
 void FLASH_write(uint32_t addr, uint32_t const *data, size_t dataLen);
 
-#endif /* _BL_FLASH_DRV_H_ */
+#endif /* BL_FLASH_DRV_H_ */

@@ -63,7 +63,14 @@ Reset_Handler:
   mov   sp, r0          /* set stack pointer */
 
 /* Call the clock system initialization function.*/
-    bl  SystemInit
+ // bl  SystemInit
+ /* Bootloader approach: SystemInit() is intentionally skipped.
+  * The MCU boots from HSI16 (16 MHz internal oscillator) by default.
+  * No PLL or HSE is needed — 16 MHz is sufficient for 115200 baud UART.
+  * The FPU enable block inside SystemInit() is also a no-op here because
+  * the bootloader compiles with -mfloat-abi=soft (__FPU_USED == 0).
+  * system_stm32g4xx.c is therefore not compiled (see CMakeLists.txt).
+  * SystemInit is declared .weak below so the linker does not require it. */
 
 /* Copy the data segment initializers from flash to SRAM */
   ldr r0, =_sdata
@@ -589,4 +596,6 @@ g_pfnVectors:
 
 	.weak	FMAC_IRQHandler
 	.thumb_set FMAC_IRQHandler,Default_Handler
+
+	.weak	SystemInit
 

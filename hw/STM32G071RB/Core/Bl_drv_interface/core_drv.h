@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2026
  *
  */
-#ifndef _CORE_DRV_H_
-#define _CORE_DRV_H_
+#ifndef CORE_DRV_H_
+#define CORE_DRV_H_
 
 #include <stdbool.h>
 
@@ -23,4 +23,4 @@ void jump_to_app(void);
 void system_reset(void);
 bool CORE_is_valid_app(void);
 
-#endif /* _CORE_DRV_H_*/
+#endif /* CORE_DRV_H_ */

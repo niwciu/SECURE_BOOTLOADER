@@ -11,7 +11,6 @@
 #include "core_drv.h"
 #include "stm32g474xx.h"
 #include "bl_hw_config.h"
-#include <memory.h>
 #include <stddef.h>
 
 #define ICER_DISABLE_ALL_Msk 0xFFFFFFFFUL

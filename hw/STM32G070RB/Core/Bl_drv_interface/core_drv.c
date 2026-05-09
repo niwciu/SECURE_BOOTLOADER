@@ -11,7 +11,6 @@
 #include "core_drv.h"
 #include "stm32g070xx.h"
 #include "bl_hw_config.h"
-#include <memory.h>
 #include <stddef.h>
 
 #define ICER_DISABLE_ALL_Msk 0xFFFFFFFFUL
@@ -53,12 +52,6 @@ void jump_to_app(void)
 
     NVIC->ICER[0] = ICER_DISABLE_ALL_Msk;
     NVIC->ICPR[0] = ICPR_CLEAR_ALL_Msk;
-    /* for different cortex-m */
-    // for (int i = 0; i < (sizeof(NVIC->ICER)/sizeof(NVIC->ICER[0])); i++)
-    // {
-    //     NVIC->ICER[i] = 0xFFFFFFFF;
-    //     NVIC->ICPR[i] = 0xFFFFFFFF;
-    // }
     SCB->VTOR = APP_START;
 
     __DSB();

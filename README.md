@@ -156,5 +156,13 @@ docs/          MkDocs documentation source
 ```
 
 ## License
-
+MIT License
 Copyright © 2026 niwciu
+
+<div align="center">
+
+***
+
+![myEmbeddedWayBanerWhiteSmaller](https://github.com/user-attachments/assets/f4825882-e285-4e02-a75c-68fc86ff5716)
+***
+</div>

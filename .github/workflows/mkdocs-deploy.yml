@@ -58,6 +58,9 @@ jobs:
           path: ./docs/reports
           search_artifacts: true
 
+      - name: Copy CHANGELOG.md into docs
+        run: cp CHANGELOG.md docs/CHANGELOG.md
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:

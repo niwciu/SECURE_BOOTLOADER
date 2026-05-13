@@ -77,6 +77,7 @@ nav:
   - Build System: build/cmake.md
   - Testing: testing/unit-tests.md
   - Reports: reports.md
+  - Changelog: CHANGELOG.md
 
 extra:
   social:

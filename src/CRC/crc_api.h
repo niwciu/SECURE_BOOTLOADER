@@ -20,8 +20,8 @@
  * @copyright Copyright (c) 2026
  *
  */
-#ifndef CRC_H_
-#define CRC_H_
+#ifndef CRC_API_H_
+#define CRC_API_H_
 
 #include <stdint.h>
 #include <stddef.h>
@@ -65,4 +65,4 @@ uint32_t CRC_add_byte_tab(uint32_t crc, uint8_t const *data, size_t dataLen);
  */
 uint32_t CRC_result(uint32_t crc);
 
-#endif /* CRC_H_ */
+#endif /* CRC_API_H_ */

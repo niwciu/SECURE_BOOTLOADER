@@ -70,7 +70,7 @@ PRIVATE void bl_key_check(void);
 PRIVATE void update_bl_status_led(void);
 PRIVATE void check_bl_exit_condition(void);
 PRIVATE void update_com_fsm(void);
-PRIVATE void do_reset(void);
+PRIVATE void do_reset(bool ok);
 PRIVATE void do_get_version(void);
 PRIVATE void do_start(void);
 PRIVATE void do_next_page(void);
@@ -280,7 +280,7 @@ PRIVATE void check_bl_exit_condition(void)
         }
         else
         {
-            do_reset();
+            do_reset(false);
         }
     }
 }
@@ -308,7 +308,7 @@ PRIVATE void update_com_fsm(void)
             do_next_page();
             break;
         case CMD_RESET:
-            do_reset();
+            do_reset(true);
             break;
         default:
             send_byte((uint8_t)CMD_ERR);
@@ -324,9 +324,9 @@ PRIVATE void update_com_fsm(void)
  *         Serves both as the CMD_RESET command handler and as the error-exit
  *         path (no valid application, partial-transfer timeout).
  */
-PRIVATE void do_reset(void)
+PRIVATE void do_reset(bool ok)
 {
-    send_byte((uint8_t)CMD_OK | (uint8_t)CMD_RESET);
+    send_byte(((ok ? (uint8_t)CMD_OK : (uint8_t)CMD_ERR) | (uint8_t)CMD_RESET));
     while (!byte_transmission_complete())
     {
     }
@@ -366,7 +366,8 @@ PRIVATE void do_start(void)
         product_id != DEVICE_ID ||
         header.flash_page_size != FLASH_PAGE_SIZE ||
         header.page_count == 0 ||
-        header.page_count > (APP_LAST_PAGE - APP_START_PAGE + 1U))
+        header.page_count > (APP_LAST_PAGE - APP_START_PAGE + 1U) ||
+        header.app_version < header.prev_app_version)
     {
         send_byte((uint8_t)CMD_ERR | (uint8_t)CMD_START);
         return;
@@ -382,7 +383,10 @@ PRIVATE void do_start(void)
     page_pos = APP_START;
     page_rem = header.page_count;
 
-    AES_CBC_init(KEY, (const uint8_t *)header.iv);
+    uint8_t iv[IV_BLOCK_SIZE];
+    for (size_t i = 0; i < IV_BLOCK_SIZE; i++)
+        iv[i] = header.iv[i];
+    AES_CBC_init(KEY, iv);
     crc = CRC_init();
 
     send_byte((uint8_t)CMD_OK | (uint8_t)CMD_START);

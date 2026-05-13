@@ -338,11 +338,11 @@ jobs:
           chmod +x test/CRC/out/CRC_test
           test/CRC/out/CRC_test -v
 
-      # - name: Check coverage — MAIN_APP
-      #   uses: threeal/gcovr-action@v1.1.0
-      #   with:
-      #     excludes: test
-      #     fail-under-line: 90
+      - name: Check coverage — MAIN_APP
+        uses: threeal/gcovr-action@v1.1.0
+        with:
+          excludes: test
+          fail-under-line: 90
 
       - name: Check coverage — CRC
         uses: threeal/gcovr-action@v1.1.0

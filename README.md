@@ -56,7 +56,7 @@ flowchart LR
 - Selectable software or hardware CRC (STM32 CRC peripheral)
 - 44 unit tests (Unity + CMock) — no hardware required
 
-## Supported Targets
+## Supported Target Implementations
 
 | Target | MCU | Core | Flash |
 |--------|-----|------|-------|
@@ -64,6 +64,8 @@ flowchart LR
 | STM32G071RB | STM32G071RBTx | Cortex-M0+ | 128 KB |
 | STM32G474RE | STM32G474RETx | Cortex-M4F | 512 KB |
 | ATmega328P | ATmega328P | AVR8 | 32 KB |
+
+> For unsupported targets, integration requires implementing a hardware abstraction (driver) layer based on the provided repository template.
 
 ## Quick Start
 

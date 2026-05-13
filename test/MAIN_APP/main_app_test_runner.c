@@ -52,6 +52,7 @@ TEST_GROUP_RUNNER(main_app_start_cmd)
     RUN_TEST_CASE(main_app_start_cmd, GivenWrongFlashPageSize_WhenStartCmdExecuted_ThenErrStartSent);
     RUN_TEST_CASE(main_app_start_cmd, GivenPageCountZero_WhenStartCmdExecuted_ThenErrStartSent);
     RUN_TEST_CASE(main_app_start_cmd, GivenPageCountExceedsAppRegion_WhenStartCmdExecuted_ThenErrStartSent);
+    RUN_TEST_CASE(main_app_start_cmd, GivenAppVersionBelowPrevVersion_WhenStartCmdExecuted_ThenErrStartSent);
     RUN_TEST_CASE(main_app_start_cmd, GivenValidHeader_WhenStartCmdExecuted_ThenFlashUnlockedAndLocked);
     RUN_TEST_CASE(main_app_start_cmd, GivenValidHeader_WhenStartCmdExecuted_ThenEveryAppPageErased);
     RUN_TEST_CASE(main_app_start_cmd, GivenValidHeader_WhenStartCmdExecuted_ThenAesInitCalledWithHeaderIV);

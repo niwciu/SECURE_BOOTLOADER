@@ -92,7 +92,7 @@ TEST(main_app_exit, GivenTickAtTimeoutAndInvalidApp_WhenExitCheckCalled_ThenSyst
     com_state = COM_READY;
 
     CORE_is_valid_app_ExpectAndReturn(false);
-    send_byte_Expect((uint8_t)CMD_OK | (uint8_t)CMD_RESET);
+    send_byte_Expect((uint8_t)CMD_ERR | (uint8_t)CMD_RESET);
     byte_transmission_complete_ExpectAndReturn(true);
     system_reset_Expect();
 
@@ -106,7 +106,7 @@ TEST(main_app_exit, GivenTickAtTimeoutAndMidReceive_WhenExitCheckCalled_ThenSyst
     com_state = COM_NEXT_BYTE; /* short-circuits CORE_is_valid_app() */
 
     /* CORE_is_valid_app must NOT be called */
-    send_byte_Expect((uint8_t)CMD_OK | (uint8_t)CMD_RESET);
+    send_byte_Expect((uint8_t)CMD_ERR | (uint8_t)CMD_RESET);
     byte_transmission_complete_ExpectAndReturn(true);
     system_reset_Expect();
 
@@ -120,7 +120,7 @@ TEST(main_app_exit, GivenTickExceedsTimeout_WhenExitCheckCalled_ThenConditionAls
     com_state = COM_READY;
 
     CORE_is_valid_app_ExpectAndReturn(false);
-    send_byte_Expect((uint8_t)CMD_OK | (uint8_t)CMD_RESET);
+    send_byte_Expect((uint8_t)CMD_ERR | (uint8_t)CMD_RESET);
     byte_transmission_complete_ExpectAndReturn(true);
     system_reset_Expect();
 

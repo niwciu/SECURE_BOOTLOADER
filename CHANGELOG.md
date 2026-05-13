@@ -8,7 +8,7 @@ Versions are tagged as `vX.Y.Z` in the repository.
 
 ## [v1.0.0] - 2026-05-09
 
-### ✨ Added
+### ✨ Initial Release
 
 #### Core bootloader
 

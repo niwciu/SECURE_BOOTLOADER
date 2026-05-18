@@ -30,23 +30,11 @@ Without flash read-protection enabled, the key can be extracted by reading devic
 
 Failure to set read-protection exposes the AES key to physical attack.
 
-### Downgrade Protection
+### Downgrade / Rollback
 
-The firmware header carries two version fields:
+Intentional firmware downgrades are supported. The bootloader accepts any valid, correctly signed image regardless of its `app_version` value, allowing a device to be recovered by reflashing an older working release.
 
-| Field | Meaning |
-|---|---|
-| `app_version` | Version of the image being flashed |
-| `prev_app_version` | Minimum version this image allows upgrading from |
-
-The bootloader enforces `app_version >= prev_app_version` as a header self-consistency check.
-This catches malformed or corrupted headers but **does not prevent flashing an older legitimately-signed image** (a classic downgrade attack), because the bootloader has no persistent record of the currently installed version.
-
-Full rollback prevention requires one of:
-- A monotonic counter stored in a dedicated flash metadata page, incremented on every successful flash.
-- Reading the installed app's version from a known fixed offset in application flash, agreed upon between the application and bootloader.
-
-Neither mechanism is implemented in this release. If your threat model includes rollback attacks, this must be addressed before deployment.
+If your threat model requires preventing rollback attacks, this must be enforced on the host side (e.g. the update tool refuses to package older versions) or by adding a monotonic counter in a dedicated flash metadata page — neither mechanism is implemented in this bootloader.
 
 ### AES Key Provisioning
 

@@ -44,7 +44,6 @@ typedef struct
     uint32_t product_ID_MSB;
     uint32_t product_ID_LSB;
     uint32_t app_version;
-    uint32_t prev_app_version;
     uint32_t page_count;
     uint32_t flash_page_size;
     uint8_t iv[IV_BLOCK_SIZE];

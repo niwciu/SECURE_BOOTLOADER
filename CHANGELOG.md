@@ -6,6 +6,25 @@ Versions are tagged as `vX.Y.Z` in the repository.
 
 ---
 
+## [v2.0.0] - 2026-05-18
+
+> **Compatibility:** requires [SecureLoader](https://github.com/niwciu/SecureLoader) **v2.0.0 or later**.  
+> SecureLoader v1.x sends a 48-byte header and is incompatible with this release.
+
+### Changed
+
+- **`header_t` reduced from 48 → 44 bytes** — removed `prev_app_version` field.  
+  The encrypted firmware file format (produced by EncryptBIN) is unchanged — it still carries a 48-byte header including `prev_app_version`.  
+  SecureLoader must strip `prev_app_version` before transmitting the header over UART, sending 44 bytes to the bootloader.
+- **Downgrade / rollback now permitted** — the `app_version < prev_app_version` guard in `do_start()` has been removed.  
+  Any correctly signed and encrypted image is accepted regardless of its `app_version` value, allowing devices to be recovered by reflashing an older working release.  
+  If rollback prevention is required it must be enforced on the host side (e.g. the packaging tool refuses to wrap older versions).
+- Updated `SECURITY.md` — "Downgrade Protection" section replaced with "Downgrade / Rollback" section documenting the new behaviour.
+- Updated protocol documentation — `header_t` struct comment corrected to `// total: 44 bytes`.
+- Removed unit test `GivenAppVersionBelowPrevVersion_WhenStartCmdExecuted_ThenErrStartSent` (no longer applicable).
+
+---
+
 ## [v1.0.0] - 2026-05-09
 
 ### ✨ Initial Release

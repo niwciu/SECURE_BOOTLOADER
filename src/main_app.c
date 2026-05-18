@@ -366,8 +366,7 @@ PRIVATE void do_start(void)
         product_id != DEVICE_ID ||
         header.flash_page_size != FLASH_PAGE_SIZE ||
         header.page_count == 0 ||
-        header.page_count > (APP_LAST_PAGE - APP_START_PAGE + 1U) ||
-        header.app_version < header.prev_app_version)
+        header.page_count > (APP_LAST_PAGE - APP_START_PAGE + 1U))
     {
         send_byte((uint8_t)CMD_ERR | (uint8_t)CMD_START);
         return;

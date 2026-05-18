@@ -59,7 +59,7 @@ typedef struct {
     uint32_t flash_page_size;   // Must match FLASH_PAGE_SIZE
     uint8_t  iv[16];            // AES-CBC initialisation vector
     uint32_t crc;               // Expected CRC-32 of the plaintext image
-} header_t;
+} header_t;                     // total: 44 bytes
 ```
 
 **Validation rules** (any failure → `CMD_ERR | CMD_START`):

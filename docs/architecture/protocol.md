@@ -62,6 +62,8 @@ typedef struct {
 } header_t;                     // total: 44 bytes
 ```
 
+> This layout changed in v2.0.0 (removed `prev_app_version`, 48 → 44 bytes). See the [Tool Compatibility](../../README.md#tool-compatibility) table for which SecureLoader versions are compatible with each bootloader release.
+
 **Validation rules** (any failure → `CMD_ERR | CMD_START`):
 
 - `protocol_version == PROTOCOL_VERSION`

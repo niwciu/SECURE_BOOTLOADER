@@ -46,6 +46,19 @@ flowchart LR
     class D,SB device
 ```
 
+## Tool Compatibility
+
+**EncryptBIN** v0.1.0 is compatible with all SecureLoader and SecureBootloader versions.
+
+The SecureBootloader ↔ SecureLoader pairing is version-locked because a protocol change in v2.0.0 reduced `header_t` from 48 → 44 bytes:
+
+| SecureBootloader | Compatible SecureLoader |
+|---|---|
+| v1.x.x (v1.0.0) | v1.x.x (v1.0.0, v1.1.0, v1.2.0) |
+| v2.x.x (v2.0.0) | v2.x.x (v2.0.0) |
+
+See [Wire Protocol](docs/architecture/protocol.md) for the header layout change details.
+
 ## Features
 
 - AES-128-CBC encrypted firmware transport with per-image IV

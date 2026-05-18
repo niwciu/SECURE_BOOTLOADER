@@ -59,8 +59,10 @@ typedef struct {
     uint32_t flash_page_size;   // Must match FLASH_PAGE_SIZE
     uint8_t  iv[16];            // AES-CBC initialisation vector
     uint32_t crc;               // Expected CRC-32 of the plaintext image
-} header_t;
+} header_t;                     // total: 44 bytes
 ```
+
+> This layout changed in v2.0.0 (removed `prev_app_version`, 48 → 44 bytes). See the [Tool Compatibility](../../README.md#tool-compatibility) table for which SecureLoader versions are compatible with each bootloader release.
 
 **Validation rules** (any failure → `CMD_ERR | CMD_START`):
 

@@ -23,7 +23,6 @@ static void set_valid_header(void)
     header.product_ID_MSB = (uint32_t)((uint64_t)DEVICE_ID >> 32);
     header.product_ID_LSB = (uint32_t)((uint64_t)DEVICE_ID & 0xFFFFFFFFUL);
     header.app_version = 2;
-    header.prev_app_version = 1;
     header.page_count = 2;
     header.flash_page_size = FLASH_PAGE_SIZE;
     header.crc = 0x00000000UL;
@@ -119,17 +118,6 @@ TEST(main_app_start_cmd, GivenPageCountExceedsAppRegion_WhenStartCmdExecuted_The
 {
     set_valid_header();
     header.page_count = APP_LAST_PAGE - APP_START_PAGE + 2U;
-
-    send_byte_Expect((uint8_t)CMD_ERR | (uint8_t)CMD_START);
-
-    do_start();
-}
-
-TEST(main_app_start_cmd, GivenAppVersionBelowPrevVersion_WhenStartCmdExecuted_ThenErrStartSent)
-{
-    set_valid_header();
-    header.app_version = 1;
-    header.prev_app_version = 2;
 
     send_byte_Expect((uint8_t)CMD_ERR | (uint8_t)CMD_START);
 
